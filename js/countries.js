@@ -26,5 +26,17 @@ const displayCountries = (countries) => {
 };
 
 const loadCountryByName = (name) => {
-  console.log(name);
+  const url = `https://restcountries.com/v3.1/name/${name}`;
+  fetch(url)
+    .then((res) => res.json())
+    .then((data) => displayCountriesDetail(data[0]));
+};
+const displayCountriesDetail = (country) => {
+  console.log(country);
+  const countryDiv = document.getElementById("country-detail");
+  countryDiv.innerHTML = `
+  <h5>${country.name.common}</h5>
+  <p>population: ${country.population}</p>
+  <img width="200px" src="${country.flags.png}" alt="Flag of ${country.name.common}">
+  `;
 };
