@@ -1,40 +1,57 @@
-const searchFood = () => {
+const searchFood = async () => {
   const searchField = document.getElementById("search-field");
   const searchText = searchField.value;
   console.log(searchText);
   searchField.value = "";
 
-
-  if (searchText === '') {
+  if (searchText === "") {
     const searchResult = document.getElementById("search-result");
-    searchResult.textContent = '';
+    searchResult.textContent = "";
 
-    const emptySearchMesssage = document.createElement('p');
-    emptySearchMesssage.classList.add('text-center', 'fs-4', 'fw-bold', 'text-danger', 'mt-4');
+    const emptySearchMesssage = document.createElement("p");
+    emptySearchMesssage.classList.add(
+      "text-center",
+      "fs-4",
+      "fw-bold",
+      "text-danger",
+      "mt-4"
+    );
     emptySearchMesssage.textContent =
       "Please enter a search term to find a meal.";
     searchResult.appendChild(emptySearchMesssage);
     return;
-}
+  }
 
   const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchText}`;
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => displaySearchResult(data.meals));
+
+  const res = await fetch(url);
+  const data = await res.json();
+  displaySearchResult(data.meals);
+
+
+  // fetch(url)
+  //   .then((res) => res.json())
+  //   .then((data) => displaySearchResult(data.meals));
 };
 
 const displaySearchResult = (meals) => {
   const searchResult = document.getElementById("search-result");
-  searchResult.textContent = '';
+  searchResult.textContent = "";
 
   if (!meals || meals.length == 0) {
-    const noResultMessage = document.createElement('p');
-    noResultMessage.classList.add('text-center', 'fs-4', 'fw-bold', 'text-danger', 'mt-4');
-    noResultMessage.textContent = 'No results found. Please try searching with a different keyword';
+    const noResultMessage = document.createElement("p");
+    noResultMessage.classList.add(
+      "text-center",
+      "fs-4",
+      "fw-bold",
+      "text-danger",
+      "mt-4"
+    );
+    noResultMessage.textContent =
+      "No results found. Please try searching with a different keyword";
     searchResult.appendChild(noResultMessage);
     return;
-}
-
+  }
 
   meals.forEach((meal) => {
     console.log(meal);
@@ -53,15 +70,22 @@ const displaySearchResult = (meals) => {
   });
 };
 
-const loadMealDetail = (mealId) => {
+const loadMealDetail = async (mealId) => {
   const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`;
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => displayMealDetail(data.meals[0]));
+
+  const res = await fetch(url);
+  const data = await res.json();
+  displayMealDetail(data.meals[0]);
+
+  // fetch(url)
+  //   .then((res) => res.json())
+  //   .then((data) => displayMealDetail(data.meals[0]));
 };
+
 const displayMealDetail = (meal) => {
   console.log(meal);
-  const MealDetails = document.getElementById("meal-details");
+  const mealDetails = document.getElementById("meal-details");
+  mealDetails.textContent = ' ';
   const div = document.createElement("div");
   div.classList.add("card");
   div.innerHTML = `
@@ -72,5 +96,5 @@ const displayMealDetail = (meal) => {
           <a href="${meal.strYoutube}" class="btn btn-primary">Go Somewhere</a>
         </div>
   `;
-  MealDetails.appendChild(div);
+  mealDetails.appendChild(div);
 };
