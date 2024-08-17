@@ -1,3 +1,5 @@
+
+
 const searchFood = async () => {
   const searchField = document.getElementById("search-field");
   const searchText = searchField.value;
@@ -27,6 +29,7 @@ const searchFood = async () => {
   const res = await fetch(url);
   const data = await res.json();
   displaySearchResult(data.meals);
+
 
 
   // fetch(url)

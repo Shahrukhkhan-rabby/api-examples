@@ -1,27 +1,36 @@
-const searchFood = () => {
+const searchFood = async () => {
   const searchField = document.getElementById("search-field");
   const searchText = searchField.value;
   console.log(searchText);
   searchField.value = "";
 
 
-  if (searchText === '') {
-    const searchResult = document.getElementById("search-result");
-    searchResult.textContent = '';
+  const searchResult = document.getElementById("search-result");
+  searchResult.textContent = '';
 
+  if (searchText === ' ') {
     const emptySearchMesssage = document.createElement('p');
     emptySearchMesssage.classList.add('text-center', 'fs-4', 'fw-bold', 'text-danger', 'mt-4');
     emptySearchMesssage.textContent =
       "Please enter a search term to find a meal.";
     searchResult.appendChild(emptySearchMesssage);
     return;
-}
+  }
 
-  const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchText}`;
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => displaySearchResult(data.meals));
-};
+  const url = `https://www.themealdb.com/api/json/v91/1/search.php?s=${searchText}`;
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    displaySearchResult(data.meals);
+  } catch (error) {
+    console.error('Error fetching the meal data', error);
+    const errorMessage = document.createElement('p');
+    errorMessage.classList.add('text-center', 'fs-4', 'fw-bold', 'text-danger', 'mt-4');
+    errorMessage.textContent = 'Failed to fetch data. Please try again later.';
+    searchResult.appendChild(errorMessage);
+  }
+}
 
 const displaySearchResult = (meals) => {
   const searchResult = document.getElementById("search-result");
@@ -53,12 +62,23 @@ const displaySearchResult = (meals) => {
   });
 };
 
-const loadMealDetail = (mealId) => {
+const loadMealDetail = async (mealId) => {
   const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`;
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => displayMealDetail(data.meals[0]));
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    displayMealDetail(data.meals[0]);
+  } catch (error) {
+    console.error('Error fetching the meal detail:', error);
+    const mealDetails = document.getElementById('meal-details');
+    mealDetails.textContent = ' ';
+    const errorMessage = document.createElement('p');
+    errorMessage.classList.add('text-center', 'fs-4', 'fw-bold', 'text-danger', 'mt-4');
+    errorMessage.textContent = 'Failed to load meal details. Please try again later.';
+    mealDetails.appendChild(errorMessage);
+  }
 };
+
 const displayMealDetail = (meal) => {
   console.log(meal);
   const MealDetails = document.getElementById("meal-details");
@@ -74,3 +94,5 @@ const displayMealDetail = (meal) => {
   `;
   MealDetails.appendChild(div);
 };
+
+
